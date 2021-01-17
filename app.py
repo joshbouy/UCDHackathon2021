@@ -15,7 +15,9 @@ def form():
 @app.route('/', methods=['POST'])
 def my_form_post():
 
-    url = request.form['text']
+    #search_key = request.form['text']    
+    url = 'https://www.amazon.com/s?k=' + "+".join( (request.form['text']).split() )
+
     e = Extractor.from_yaml_file('selectors.yml')
 
     def scrape(url):
