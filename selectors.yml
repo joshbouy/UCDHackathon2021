@@ -1,8 +1,11 @@
 name:
     css: '#productTitle'
     type: Text
+stock:
+    css: '#availability'
+    type: Text
 price:
-    css: '#price_inside_buybox'
+    css: '#priceblock_ourprice'
     type: Text
 short_description:
     css: '#featurebullets_feature_div'
