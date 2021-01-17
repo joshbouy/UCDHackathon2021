@@ -1,12 +1,21 @@
 from flask import Flask,render_template,request
 from selectorlib import Extractor
-from flask import jsonify
+from flask import jsonify,Markup
+from bs4 import BeautifulSoup
 import requests
 import json
-from time import sleep
+
 
 app = Flask(__name__)
 
+class Item:
+    def __init__(self, productName, price):
+        self.productName = productName
+        self.price = price
+    def display(self):
+        res = []
+        res.append(self.productName, str(self.price))
+        return res
 
 @app.route('/')
 def form():
@@ -14,14 +23,11 @@ def form():
 
 @app.route('/', methods=['POST'])
 def my_form_post():
-
-    #search_key = request.form['text']    
+ 
     url = 'https://www.amazon.com/s?k=' + "+".join( (request.form['text']).split() )
-
-    e = Extractor.from_yaml_file('selectors.yml')
-
+    
     def scrape(url):
-        inStock = False
+        items = []
         fakePerson = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0;   Win64;     x64; rv:66.0) Gecko/20100101 Firefox/66.0",    "Accept-Encoding":"gzip, deflate",     "Accept":"text/html,    application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",     "DNT":"1","Connection":"close",     "Upgrade-Insecure-Requests":"1"}
         print("Downloading %s"%url)
         req = requests.get(url, headers=fakePerson)
@@ -31,22 +37,34 @@ def my_form_post():
             else:
                 print("Page %s must have been blocked by Amazon as  the status code was %d"%(url,req.status_code))
             return None
-        return (e.extract(req.text), inStock)
-    # product_data = []
-    outfile = ""
-    data, stockStatus = scrape(url)
-    if data:
-        outfile = str(json.dumps(data))
-        jsonOBJ = json.loads(outfile)
-        #jsonOBJ.update({"InStock": stockStatus})
-        outfile = json.dumps(jsonOBJ)
-        # sleep(5)
+        soup = BeautifulSoup(str(req.text), 'html.parser')
+        productName = soup.find_all('span', class_="a-size-base-plus a-color-base a-text-normal")
+        productPrices = soup.find_all('span', class_="a-price-whole")
+        productPricesDec = soup.find_all('span', class_="a-price-fraction")
+        for i in range(len(productName)):
+            priceString = "0.0"
+            try:
+                priceString = str(productPrices[i].next) + "." + str(productPricesDec[i].next)
+            except IndexError:
+                pass
+            items.append(Item(str(productName[i].next), float(priceString)))
+        return items
 
-    return outfile
+        outfile = ""
+        items = scrape(url)
+        stuff = []
+        if items:
+            for each in items:
+                stuff.append(str(json.dumps(each.__dict__)))
+            outfile = json.dumps(stuff)
 
 @app.route('/scrap')
 def getStoreJSON():
     return outfile
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run() 

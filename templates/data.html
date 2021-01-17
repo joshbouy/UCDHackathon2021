@@ -1,4 +1,25 @@
-{% for key,value in form.items() %}
-<h2> {{key}}</h2>
-<p> {{value}}</p>
-{% endfor %}
+<!doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="{{ url_for('static',     filename='abc.json') }}"></script>
+        <script type="text/javascript" >
+            function load() {
+                var mydata = JSON.parse(data);
+                alert(mydata.length);
+
+                var div = document.getElementById('data');
+
+                for(var i = 0;i < mydata.length; i++)
+                {
+                    div.innerHTML = div.innerHTML + "<p class='inner' id="+i+">"+ mydata[i].name +"</p>" + "<br>";
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="{{ url_for('static',     filename='css/template.css') }}">
+    </head>
+    <body onload="load()">
+        <div id="data">
+
+        </div>
+    </body>
+</html>

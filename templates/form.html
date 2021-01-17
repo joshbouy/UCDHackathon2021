@@ -1,4 +1,19 @@
-<form method="POST">
-    <p> enter search word here <input name="text"> </p>
-    <input type="submit">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>got stock? | an amazon webscraper</title>
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/template.css') }}">
+</head>
+<body>
+<section>
+    <div class = "center">
+    <h1 class="title"> got stock?</h1>
+        <form method="POST">
+            <input class="search-style" name="text" placeholder="search here">
+        </form>
+        </div>
+</section>
+</body>
+</html>
