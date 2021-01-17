@@ -1,12 +1,7 @@
 from flask import Flask,render_template,request
 from selectorlib import Extractor
-<<<<<<< HEAD
 from flask import jsonify,Markup
 from bs4 import BeautifulSoup
-=======
-from bs4 import BeautifulSoup
-from flask import jsonify
->>>>>>> eca7fa3ea45793a6f04b1923fe6377a3052275b2
 import requests
 import json
 
@@ -21,10 +16,6 @@ class Item:
         res = []
         res.append(self.productName, str(self.price))
         return res
-<<<<<<< HEAD
-=======
-
->>>>>>> eca7fa3ea45793a6f04b1923fe6377a3052275b2
 
 @app.route('/')
 def form():
@@ -34,24 +25,10 @@ def form():
 def my_form_post():
  
     url = 'https://www.amazon.com/s?k=' + "+".join( (request.form['text']).split() )
-<<<<<<< HEAD
     
     def scrape(url):
         items = []
         fakePerson = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0;   Win64;     x64; rv:66.0) Gecko/20100101 Firefox/66.0",    "Accept-Encoding":"gzip, deflate",     "Accept":"text/html,    application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",     "DNT":"1","Connection":"close",     "Upgrade-Insecure-Requests":"1"}
-=======
-
-    e = Extractor.from_yaml_file('selectors.yml')
-    def scrape(url):
-        #inStock = False
-        items = []
-        fakePerson = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64;     x64; rv:66.0) Gecko/20100101 Firefox/66.0",
-        "Accept-Encoding":"gzip, deflate",     
-        "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "DNT":"1",
-        "Connection":"close",
-        "Upgrade-Insecure-Requests":"1"}
->>>>>>> eca7fa3ea45793a6f04b1923fe6377a3052275b2
         print("Downloading %s"%url)
         req = requests.get(url, headers=fakePerson)
         if req.status_code > 500:
@@ -72,7 +49,6 @@ def my_form_post():
                 pass
             items.append(Item(str(productName[i].next), float(priceString)))
         return items
-<<<<<<< HEAD
 
         outfile = ""
         items = scrape(url)
@@ -81,8 +57,6 @@ def my_form_post():
             for each in items:
                 stuff.append(str(json.dumps(each.__dict__)))
             outfile = json.dumps(stuff)
-=======
->>>>>>> eca7fa3ea45793a6f04b1923fe6377a3052275b2
 
 @app.route('/scrap')
 def getStoreJSON():
