@@ -5,9 +5,6 @@ from bs4 import BeautifulSoup
 import requests
 import json
 
-
-app = Flask(__name__)
-
 class Item:
     def __init__(self, productName, price):
         self.productName = productName
@@ -16,6 +13,8 @@ class Item:
         res = []
         res.append(self.productName, str(self.price))
         return res
+
+app = Flask(__name__)
 
 @app.route('/')
 def form():
