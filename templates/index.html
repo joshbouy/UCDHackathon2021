@@ -4,24 +4,23 @@
   <title>Datatables Example</title>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
-  <link rel="stylesheet" href="{{ url_for('static',     filename='css/template.css') }}">
   <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
   <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
-<h1 class = "title">Products In Stock</h1>
-<table class="table-text" id="products" class="display" style="width:100%">
+<h1>My Heading</h1>
+<table id="example" class="display" style="width:100%">
         <thead>
             <tr>
-                <th>product name</th>
-                <th>price</th>
+                <th>Name</th>
+                <th>Position</th>
                 <th>link</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
-                <th>product name</th>
-                <th>price</th>
+                <th>Name</th>
+                <th>Position</th>
                 <th>link</th>
             </tr>
         </tfoot>
@@ -29,9 +28,10 @@
 <script>
 function setupData() {
     $(document).ready(function () {
-        $('#products').DataTable({
+        $('#example').DataTable({
             "ajax": {
-                "url": "/scrap",
+                // "url": "static/objects2.txt", // This works for the static file
+                "url": "/index_get_data", // This now works too thanks to @kthorngren
                 "dataType": "json",
                 "dataSrc": "data",
                 "contentType":"application/json"
@@ -39,13 +39,12 @@ function setupData() {
             "columns": [
                 {"data": "productName"},
                 {"data": "price"},
-                {"data": "link"},
+                {"data":"link"},
             ]
         });
     });
 }
 $( window ).on( "load", setupData );
-
 </script>
 </body>
 </html>
