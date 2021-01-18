@@ -6,22 +6,16 @@ import requests
 import json
 
 class Item:
-    def __init__(self, productName, price):
+    def __init__(self, productName: str, price: float, Link: str):
         self.productName = productName
         self.price = price
+        self.Link = Link
     def display(self):
-        res = []
-        res.append(self.productName, str(self.price))
-        return res
-
+        return self.productName, self.price, self.Link
 app = Flask(__name__)
-
-
 url = 'https://www.amazon.com/s?k=toilet+paper&ref=nb_sb_noss_2'
-#WEBrequest = requests.get(url)
 e = Extractor.from_yaml_file('selectors.yml')
-def scrape(url):
-    #inStock = False
+def scrape(url: str):
     items = []
     fakePerson = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64;     x64; rv:66.0) Gecko/20100101 Firefox/66.0",
      "Accept-Encoding":"gzip, deflate",     
@@ -41,23 +35,23 @@ def scrape(url):
     productName = soup.find_all('span', class_="a-size-base-plus a-color-base a-text-normal")
     productPrices = soup.find_all('span', class_="a-price-whole")
     productPricesDec = soup.find_all('span', class_="a-price-fraction")
+    productLinks = soup.find_all('a', class_="a-link-normal a-text-normal")
     for i in range(len(productName)):
         priceString = "0.0"
         try:
             priceString = str(productPrices[i].next) + "." + str(productPricesDec[i].next)
         except IndexError:
             pass
-        items.append(Item(str(productName[i].next), float(priceString)))
+        items.append(Item(str(productName[i].next), float(priceString), "amazon.com" + str(productLinks[i].get('href'))))
     return items
-# product_data = []
 outfile = ""
 items = scrape(url)
 stuff = []
 if items:
     for each in items:
         stuff.append(str(json.dumps(each.__dict__)))
-    outfile = json.dumps(stuff)
-
+    outfile = json.dumps(stuff, indent=4, sort_keys=True)
+    
 @app.route('/')
 def getStoreJSON():
     return outfile
